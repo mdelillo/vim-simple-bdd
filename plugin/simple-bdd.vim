@@ -1,30 +1,37 @@
 function! s:SimpleBDD() range
-  " Change first word to def and collapse whitespace
-  normal! ^cwdeflcw w
+  for line in range(a:firstline, a:lastline)
+    " Move down if necessary
+    if line != a:firstline
+      normal! j
+    endif
 
-  " Grab and mark the first surrounding quote character
-  let l:surrounding_character = getline('.')[col('.') - 1]
-  normal! ma
+    " Change first word to def and collapse whitespace
+    normal! ^cwdeflcw w
 
-  " Lowercase everything between the quotes
-  execute 'normal! `aguf' . l:surrounding_character
+    " Grab and mark the first surrounding quote character
+    let l:surrounding_character = getline('.')[col('.') - 1]
+    normal! ma
 
-  " Remove characters that aren't alphanumeric, spaces, slashes, or hypens
-  execute 'normal! `alvf' . l:surrounding_character . 'h'
-  normal! :s/\%V[^a-zA-Z0-9_ /-]//ge
+    " Lowercase everything between the quotes
+    execute 'normal! `aguf' . l:surrounding_character
 
-  " Replace spaces, slashes, and hypens with underscores
-  execute 'normal! `alvf' . l:surrounding_character . 'h'
-  normal! :s/\%V[ /-]\+/_/ge
+    " Remove characters that aren't alphanumeric, spaces, slashes, or hypens
+    execute 'normal! `alvf' . l:surrounding_character . 'h'
+    normal! :s/\%V[^a-zA-Z0-9_ /-]//ge
 
-  " Remove first surrounding quote
-  normal! `ax
+    " Replace spaces, slashes, and hypens with underscores
+    execute 'normal! `alvf' . l:surrounding_character . 'h'
+    normal! :s/\%V[ /-]\+/_/ge
 
-  " Remove last surrounding quote
-  execute 'normal! f' . l:surrounding_character . 'x'
+    " Remove first surrounding quote
+    normal! `ax
 
-  " Add an 'end' on the next line
-  normal! oend
+    " Remove last surrounding quote
+    execute 'normal! f' . l:surrounding_character . 'x'
+
+    " Add an 'end' on the next line
+    normal! oend
+  endfor
 endfunction
 
-command! SimpleBDD call s:SimpleBDD()
+command! -range SimpleBDD <line1>,<line2>call s:SimpleBDD()
