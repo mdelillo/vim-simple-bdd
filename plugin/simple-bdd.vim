@@ -1,7 +1,16 @@
 function! s:SimpleBDD() range
-  for line in range(a:firstline, a:lastline)
+  let l:simple_bdd_keywords = '\(Given\|When\|Then\|And\|Also\|But\|given\|when\|then\|and\|also\|but\)'
+  let l:count = 0
+
+  for l:line_number in range(a:firstline, a:lastline)
+    let l:line = matchstr(getline(l:line_number + l:count), ' *' . l:simple_bdd_keywords . ' ')
+    if empty(l:line)
+      normal! j
+      continue
+    endif
+
     " Move down if necessary
-    if line != a:firstline
+    if l:count > 0
       normal! j
     endif
 
@@ -31,6 +40,8 @@ function! s:SimpleBDD() range
 
     " Add an 'end' on the next line
     normal! oend
+
+    let l:count += 1
   endfor
 endfunction
 

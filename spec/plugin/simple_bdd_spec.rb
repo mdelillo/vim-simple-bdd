@@ -19,6 +19,12 @@ describe 'Vim Simple BDD' do
     Then 'They become method declarations'
   end
 
+  specify 'Ignoring lines that are not simple_bdd statements' do
+    Given 'I have lines that do not contain simple_bdd statements'
+    When 'I run the plugin on all of the lines'
+    Then 'Those lines are not changed'
+  end
+
   def i_have_a_given_statement
     write_file('test.rb', <<-EOF)
       Given 'I   am a *Very* Important   Person/Place/Thing'
@@ -67,5 +73,46 @@ describe 'Vim Simple BDD' do
     vim.edit('test.rb')
     vim.normal('Vjj:SimpleBDD<CR>')
     vim.write
+  end
+
+  def i_have_lines_that_do_not_contain_simple_bdd_statements
+    write_file('test.rb', <<-EOF)
+      it 'works correctly' do
+        Given 'A simple_bdd statement'
+
+        Ignoring 'A red herring'
+
+        # a comment
+        behavior 'stuff' do
+          when 'Something happens'
+          then 'It works!'
+        end
+      end
+    EOF
+  end
+
+  def i_run_the_plugin_on_all_of_the_lines
+    vim.edit('test.rb')
+    vim.command('%SimpleBDD')
+    vim.write
+  end
+
+  def those_lines_are_not_changed
+    expect(IO.read('test.rb').strip).to eq normalize_string_indent(<<-EOF)
+      it 'works correctly' do
+        def a_simple_bdd_statement
+        end
+
+        Ignoring 'A red herring'
+
+        # a comment
+        behavior 'stuff' do
+          def something_happens
+          end
+          def it_works
+          end
+        end
+      end
+    EOF
   end
 end
