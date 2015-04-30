@@ -9,7 +9,13 @@ describe 'Vim Simple BDD' do
 
   specify 'Generating multiple simple_bdd method declarations in normal mode' do
     Given 'I have multiple Given/When/Then statements'
-    When 'I run the plugin on the statements'
+    When 'I run the plugin on the statements in normal mode'
+    Then 'They become method declarations'
+  end
+
+  specify 'Generating multiple simple_bdd method declarations in visual mode' do
+    Given 'I have multiple Given/When/Then statements'
+    When 'I run the plugin on the statements in visual mode'
     Then 'They become method declarations'
   end
 
@@ -40,7 +46,7 @@ describe 'Vim Simple BDD' do
     EOF
   end
 
-  def i_run_the_plugin_on_the_statements
+  def i_run_the_plugin_on_the_statements_in_normal_mode
     vim.edit('test.rb')
     vim.command('1,3SimpleBDD')
     vim.write
@@ -55,5 +61,11 @@ describe 'Vim Simple BDD' do
       def something_changes
       end
     EOF
+  end
+
+  def i_run_the_plugin_on_the_statements_in_visual_mode
+    vim.edit('test.rb')
+    vim.normal('Vjj:SimpleBDD<CR>')
+    vim.write
   end
 end
