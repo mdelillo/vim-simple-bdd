@@ -46,8 +46,7 @@ function! s:SimpleBDD() range
 
   if a:firstline == a:lastline
     " Begin inserting inside above the current line
-    normal! O
-    startinsert!
+    call feedkeys('O')
   endif
 endfunction
 

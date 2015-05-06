@@ -5,7 +5,7 @@ describe 'Vim Simple BDD' do
     Given 'I have a Given statement'
     When 'I run SimpleBDD on the statement'
     Then 'It becomes a method declaration'
-    And 'I end up in insert mode inside of the method declaration'
+    And 'I end up in insert mode inside of the method with the correct indentation'
   end
 
   specify 'Generating multiple simple_bdd method declarations in normal mode' do
@@ -39,19 +39,19 @@ describe 'Vim Simple BDD' do
   end
 
   def it_becomes_a_method_declaration
-    expect(IO.read('test.rb').strip).to eq normalize_string_indent(<<-EOF)
+    expect(IO.read('test.rb').strip).to eq <<-EOF.gsub(/^ */, '').strip
       def i_am_a_very_important_person_place_thing
-
+      \t
       end
     EOF
   end
 
-  def i_end_up_in_insert_mode_inside_of_the_method_declaration
+  def i_end_up_in_insert_mode_inside_of_the_method_with_the_correct_indentation
     vim.type('I am typing')
     vim.write
     expect(IO.read('test.rb').strip).to eq normalize_string_indent(<<-EOF)
       def i_am_a_very_important_person_place_thing
-      I am typing
+      \tI am typing
       end
     EOF
   end
