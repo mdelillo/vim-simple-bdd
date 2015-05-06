@@ -43,6 +43,12 @@ function! s:SimpleBDD() range
 
     let l:count += 1
   endfor
+
+  if a:firstline == a:lastline
+    " Begin inserting inside above the current line
+    normal! O
+    startinsert!
+  endif
 endfunction
 
 command! -range SimpleBDD <line1>,<line2>call s:SimpleBDD()

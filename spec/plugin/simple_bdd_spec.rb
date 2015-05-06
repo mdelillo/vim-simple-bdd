@@ -3,25 +3,26 @@ require 'spec_helper'
 describe 'Vim Simple BDD' do
   specify 'Generating a simple_bdd method declaration' do
     Given 'I have a Given statement'
-    When 'I run the plugin on the statement'
+    When 'I run SimpleBDD on the statement'
     Then 'It becomes a method declaration'
+    And 'I end up in insert mode inside of the method declaration'
   end
 
   specify 'Generating multiple simple_bdd method declarations in normal mode' do
     Given 'I have multiple Given/When/Then statements'
-    When 'I run the plugin on the statements in normal mode'
+    When 'I run SimpleBDD on the statements in normal mode'
     Then 'They become method declarations'
   end
 
   specify 'Generating multiple simple_bdd method declarations in visual mode' do
     Given 'I have multiple Given/When/Then statements'
-    When 'I run the plugin on the statements in visual mode'
+    When 'I run SimpleBDD on the statements in visual mode'
     Then 'They become method declarations'
   end
 
   specify 'Ignoring lines that are not simple_bdd statements' do
     Given 'I have lines that do not contain simple_bdd statements'
-    When 'I run the plugin on all of the lines'
+    When 'I run SimpleBDD on all of the lines'
     Then 'Those lines are not changed'
   end
 
@@ -31,15 +32,26 @@ describe 'Vim Simple BDD' do
     EOF
   end
 
-  def i_run_the_plugin_on_the_statement
+  def i_run_simplebdd_on_the_statement
     vim.edit('test.rb')
-    vim.command('SimpleBDD')
+    vim.type(':SimpleBDD<CR>')
     vim.write
   end
 
   def it_becomes_a_method_declaration
     expect(IO.read('test.rb').strip).to eq normalize_string_indent(<<-EOF)
       def i_am_a_very_important_person_place_thing
+
+      end
+    EOF
+  end
+
+  def i_end_up_in_insert_mode_inside_of_the_method_declaration
+    vim.type('I am typing')
+    vim.write
+    expect(IO.read('test.rb').strip).to eq normalize_string_indent(<<-EOF)
+      def i_am_a_very_important_person_place_thing
+      I am typing
       end
     EOF
   end
@@ -52,7 +64,7 @@ describe 'Vim Simple BDD' do
     EOF
   end
 
-  def i_run_the_plugin_on_the_statements_in_normal_mode
+  def i_run_simplebdd_on_the_statements_in_normal_mode
     vim.edit('test.rb')
     vim.command('1,3SimpleBDD')
     vim.write
@@ -69,7 +81,7 @@ describe 'Vim Simple BDD' do
     EOF
   end
 
-  def i_run_the_plugin_on_the_statements_in_visual_mode
+  def i_run_simplebdd_on_the_statements_in_visual_mode
     vim.edit('test.rb')
     vim.normal('Vjj:SimpleBDD<CR>')
     vim.write
@@ -91,7 +103,7 @@ describe 'Vim Simple BDD' do
     EOF
   end
 
-  def i_run_the_plugin_on_all_of_the_lines
+  def i_run_simplebdd_on_all_of_the_lines
     vim.edit('test.rb')
     vim.command('%SimpleBDD')
     vim.write
