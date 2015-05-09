@@ -25,6 +25,13 @@ Run the `:SimpleBDD` command on a visual selection or range of lines to convert 
 
 ![alt tag](http://i.imgur.com/iwMk1WM.gif)
 
+## Mappings
+
+The following mappings will let you use `<leader>bdd` in normal and visual mode instead of having to run `:SimpleBDD`:
+
+    nnoremap <leader>bdd :SimpleBDD<CR>
+    vnoremap <leader>bdd :SimpleBDD<CR>
+
 
 [simple_bdd]: https://github.com/robb1e/simple_bdd
 [Vundle]: https://github.com/gmarik/Vundle.vim
